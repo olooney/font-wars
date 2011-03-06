@@ -22,15 +22,16 @@ THE SOFTWARE.
 var sound = {
 	fx: {
 		sounds: {},
-		multi: 4,
+		multi: 3,
 		masterVolume: 1.0,
 
-		load: function(label, resource, volume) {
+		load: function(label, resource, volume, multi) {
 			if ( volume === undefined ) volume = 1.0;
+			if ( multi === undefined ) multi = this.multi;
 			var channels = [];
 			channels.volume = volume;
 			this.sounds[label] = channels;
-			for ( var i=0; i<this.multi; i++ ) {
+			for ( var i=0; i<multi; i++ ) {
 				var audio = new Audio(resource);
 				channels.push(audio);
 				// *force* the audio to load.
@@ -54,16 +55,36 @@ var sound = {
 		play: function(label, volume) { 
 			return this._each(label, function(audio, i, channels) {
 				if( audio.ended == true || audio.currentTime == 0 ) {
-					if ( volume === undefined ) volume = channels.volume;
-					audio.volume = this.masterVolume * volume;
+					if ( this.muted ) {
+						audio.volume = 0;
+					} else {
+						if ( volume === undefined ) volume = channels.volume;
+						audio.volume = this.masterVolume * volume;
+					}
 					audio.currentTime = 0;
 					audio.play();
 					return true;
 				}
 			});
+		},
+
+		muted: false,
+		mute: function() {
+			this.muted = true;
+			for ( var label in this.sounds ) {
+				this._each(label, function(audio) {
+					audio.volume = 0;
+				});
+			}
+		},
+		unmute: function() {
+			this.muted = false;
 		}
 	},
 
+	// man, this is way too complicated.  All I wanted was to be
+	// able to fade music in and out, and cancel it at any point;
+	// how did I end up with this?
 	music: {
 		masterVolume: 0.5,
 		tracks: {},
@@ -100,7 +121,11 @@ var sound = {
 			if ( !audio ) throw Error("no music track \"" + label + "\"");
 			this.current = audio;
 			if ( volume === undefined ) volume = 1;
-			this.current.volume = this.masterVolume * (volume);
+			if ( this.muted ) {
+				this.current.volume = 0;
+			} else {
+				this.current.volume = this.masterVolume * (volume);
+			}
 			this.current.play();
 			return this;
 		},
@@ -108,7 +133,12 @@ var sound = {
 		volume: function(volume, fade) {
 			if ( !this.current ) return this;
 			if ( fade === undefined ) {
-				this.current.volume = volume * this.masterVolume;
+				this.currentVolume = volume;
+				if ( this.muted ) {
+					this.current.volume = 0;
+				} else {
+					this.current.volume = volume * this.masterVolume;
+				}
 			} else {
 				var initialVolume = this.current.volume;
 				for ( var i=1; i<=10; i++ ) (function(i) {
@@ -143,6 +173,28 @@ var sound = {
 			this.play(label, volume, fade, function() {
 				this.loop(label, volume, fade);
 			}, this);
+		},
+
+		muted: false,
+		mute: function() {
+			this.muted = true;
+			if ( this.current ) this.current.volume = 0;
+		},
+		unmute: function() {
+			this.muted = false;
+			if ( this.current && this.currentVolume ) {
+				this.current.volume = this.currentVolume;
+			}
 		}
+	},
+
+	mute: function() {
+		this.fx.mute();
+		this.music.mute();
+	},
+
+	unmute: function() {
+		this.fx.unmute();
+		this.music.unmute();
 	}
 };

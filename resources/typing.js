@@ -31,14 +31,29 @@ var hits = 0;
 var misses = 0;
 var startTime = new Date();
 
-sound.fx.load('hit', 'resources/sounds/9098__ddohler__Typewriter.ogg');
+var bullets = ['.', '!', '*', '..', '!!', '**'];
+function setMultiplier(m) {
+	multiplier = m || 1;
+	if ( multiplier > 50 ) multiplier = 50;
+
+	if ( multiplier == 50 ) bullet = bullets[5];
+	else if ( multiplier >= 30 ) bullet = bullets[4];
+	else if ( multiplier >= 20 ) bullet = bullets[3];
+	else if ( multiplier >= 10 ) bullet = bullets[2];
+	else if ( multiplier >= 5 ) bullet = bullets[1];
+	else bullet = bullets[0];
+}
+setMultiplier(1);
+
+sound.fx.load('hit.', 'resources/sounds/39459__THE_bizniss__laser.ogg', 1.0, 7);
+sound.fx.load('hit!', 'resources/sounds/39456__THE_bizniss__laser_2.ogg', 1.0, 7);
+sound.fx.load('hit*', 'resources/sounds/39458__THE_bizniss__laser_4.ogg', 1.0, 7);
 sound.fx.load('miss','resources/sounds/2225__Andrew_Duke__garp.ogg', 0.5);
 sound.fx.load('kill', 'resources/sounds/91924__Benboncan__Till_With_Bell.ogg');
 sound.fx.load('die', 'resources/sounds/33245__ljudman__grenade.ogg');
 
 sound.music.load('fast', 'resources/sounds/Speed_Kills_1.ogg');
 sound.music.load('ending', 'resources/sounds/erase-it.ogg');
-
 
 function log(message) {
 	$('body').append( message + '<br>');
@@ -121,6 +136,17 @@ $(instructions).center();
 
 var score = newSprite('score', '');
 $(score).css({ opacity: 0.7 });
+
+var mute = newSprite('mute', 'Mute');
+$(mute).css({ opacity: 0.7 }).click(function() {
+	if ( $(mute).html() === 'Mute' ) {
+		sound.mute();
+		$(mute).html('Unmute');
+	} else {
+		sound.unmute();
+		$(mute).html('Mute');
+	}
+});
 
 function updateScore() {
 	var minutes = (new Date() - startTime) / 6e4;
@@ -258,8 +284,8 @@ $.fn.target = function() {
 $.fn.hit = function() {
 	hits++;
 	points += multiplier;
-	sound.fx.play('hit');
-	$(newSprite('bullet', '!'))
+	sound.fx.play('hit' + bullet.charAt(0));
+	$(newSprite('bullet', bullet))
 		.css( $('.spaceship').position() )
 		.pointAt(this)
 		.animate( this.position(), distance(spaceship, this)/3, 'linear', function() { 
@@ -268,7 +294,7 @@ $.fn.hit = function() {
 	var newWord = this.html().slice(1);
 	if ( newWord.length === 0 ) {
 		sound.fx.play('kill');
-		multiplier++;
+		setMultiplier(multiplier+1);
 		this.remove();
 	} else {
 		if ( !this.hasClass('target') ) this.target();
@@ -280,7 +306,7 @@ $.fn.hit = function() {
 // oops, a bad character
 function miss(letter) { 
 	misses++;
-	multiplier = 1;
+	setMultiplier(1);
 	sound.fx.play('miss');
 }
 
