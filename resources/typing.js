@@ -138,15 +138,19 @@ var score = newSprite('score', '');
 $(score).css({ opacity: 0.7 });
 
 var mute = newSprite('mute', 'Mute');
-$(mute).css({ opacity: 0.7 }).click(function() {
+function toggleMute() {
 	if ( $(mute).html() === 'Mute' ) {
 		sound.mute();
 		$(mute).html('Unmute');
+		$.cookie('font-wars-muted', true);
 	} else {
 		sound.unmute();
 		$(mute).html('Mute');
+		$.cookie('font-wars-muted', null);
 	}
-});
+}
+$(mute).css({ opacity: 0.7 }).click(toggleMute);
+if ( $.cookie('font-wars-muted') ) toggleMute();
 
 function updateScore() {
 	var minutes = (new Date() - startTime) / 6e4;
