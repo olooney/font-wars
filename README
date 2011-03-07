@@ -20,35 +20,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 
-Font Wars is a typing game-slash-trainer. You play the brave Sgrt. A,
-trapped behind enemy lines and forced to fend off waves of enemy words
-with nothing but your trusty exclaimation point.
+Font Wars is a typing game/trainer. You play the brave Sgrt. A,
+trapped behind enemy lines and forced to fend off waves of enemy fonts
+with nothing but your trusty punctuation gun.
 
 Gameplay is straightforward. Words come towards you and you must type 
 them before they reach you. There are no special controls: just type.
 
-The Geometry-Wars-like multiplier system is my solution to the problem of 
-encouraging high accuracy instead of key mashing. Every completed word 
-increases the multiplier (up to 50) and a single mistake resets it back 
-down to 1. This strongly encourages long chains and encourages the player 
-to strive for high accuracy. High accuracy is further rewarded by visually and
-audibly upgrading the bullets as the multiplier increases.
+The word list has two sources: a list of the 1000 most common English words
+(slightly edited from proper nouns,) plus a small, random selection of "hard,"
+mostly techincal, words. In case you were wondering, "kwashiorkor" is a real
+word: it is a disease caused lack of protein, very rare in the developed world
+but a serious problem throughout the world and especially tragic in children.
 
-A "reset" is a good punishment, because a single mistake can be followed up by 
-several others before the player can get back on track: losing a life with each 
-mistake for example, could be frustrating as a single missed letter followed by 
-several otherwise correct ones could wipe you out of the game instantly.  If 
-this happens here, you just stay at the 1x multiplier.  After experimenting 
-with several alternatives, I think this is the best way to emphasize the 
-importance of accuracy without interupting the flow of the game when a mistake
-is made, or ruining the fun for low accuracy players.
+There are no graphics: Text or ascii art is used for everything. The fonts
+come from Google web fonts:
 
-There are no graphics.  Text or ascii art is used for everything.  jQuery 
-is used for animation, and no HTML5 canvas is used or needed.  It does use 
-HTML5 audio, however, for background music and sound effects.
+	http://code.google.com/apis/webfonts/
 
+jQuery is used for animation, and no HTML5 canvas is used. Although you'd
+think moving divs around would be flawlessly supported by now, I have seen 
+rendering artifacts on some browsers, especially once I started using custom
+fonts. 
+
+It uses the new HTML5 audio element for background music and sound effects.
 Right now, I'm only using .ogg, which aparently does't work in Safari. I
-would have to double encode the sound files and implement switching logic.
+would have to double encode the sound files and implement switching logic to
+support that.
 
 Some sound effects came from freesound.org and require attribution:
 http://www.freesound.org/samplesViewSingle.php?id=2225
@@ -62,6 +60,22 @@ http://www.freesound.org/samplesViewSingle.php?id=9098
 http://www.freesound.org/samplesViewSingle.php?id=91924
 
 Your previous personal best is stored in a local cookie. I assume people will 
-use the game to train their own typing skills, and the only competition that 
-matters when training is yourself.
+use the game to develop their own typing skills, and the only competition that 
+matters when training is with yourself.
+
+The Geometry-Wars-like multiplier system is my solution to the problem of 
+encouraging high accuracy instead of key mashing. Every completed word 
+increases the multiplier (up to 50) and a single mistake resets it back 
+down to 1. This strongly encourages long chains and encourages the player 
+to strive for high accuracy. High accuracy is further rewarded by visually and
+audibly upgrading the bullets as the multiplier increases.
+
+A "reset" is a good punishment, because a single mistake can be followed up by 
+several others before the player can get back on track: losing a life with each 
+mistake for example, could be frustrating as a single missed letter followed by 
+several otherwise correct ones could wipe you out of the game instantly. If 
+this happens here, you just stay at the 1x multiplier. After experimenting 
+with several alternatives, I think this is the best way to emphasize the 
+importance of accuracy without interupting the flow of the game when a mistake
+is made, or ruining the fun for low accuracy players.
 
