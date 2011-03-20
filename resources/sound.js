@@ -182,3 +182,28 @@ var sound = {
 		this.music.unmute();
 	}
 };
+
+// the HTML5 audio tag is pretty unreliable across all browsers.
+// Use the nuclear option and catch EVERYTHING.
+(function() { 
+	function safely(fn) {
+		return function() {
+			try {
+				return fn.apply(this, arguments);
+			} catch ( e ) { }
+			return this; // safely chain...
+		}
+	}
+
+	function makeSafe(obj) {
+		for ( var m in obj ) {
+			if ( typeof obj[m] === 'function' ) {
+				obj[m] = safely(obj[m]);
+			}
+		}
+	}
+
+	makeSafe(sound.fx);
+	makeSafe(sound.music);
+})();
+
