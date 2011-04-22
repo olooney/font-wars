@@ -330,7 +330,7 @@ function miss(letter) {
 }
 
 $(document).keypress(function(e) {
-	if ( gameOver ) return;
+	if ( gameOver ) return false;
 
 	if ( loadingScreen ) {
 		if ( e.which === 13 ) {
@@ -344,13 +344,13 @@ $(document).keypress(function(e) {
 	}
 
 	// ignore all shortcuts
-	if ( e.altKey || e.ctrlKey ) return;
+	if ( e.altKey || e.ctrlKey ) return false;
 	var key = e.which;
 	var letter = '';
 	if ( key > 96 && key < 123 ) letter = String.fromCharCode(key);
 	else if ( key > 64 && key < 91 ) letter = String.fromCharCode(key + 32);
 	else if ( key === 39 || key === 34 ) letter = "'"; // apostrophes are used in some words...
-	else return;
+	else return false;
 
 	var target = $('.enemy.target').first();
 	if ( target.length ) {
@@ -362,6 +362,7 @@ $(document).keypress(function(e) {
 		else miss(letter);
 	}
 	updateScore();
+	return false;
 });
 
 });
