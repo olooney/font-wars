@@ -330,7 +330,7 @@ function miss(letter) {
 }
 
 $(document).keypress(function(e) {
-	if ( gameOver ) return false;
+	if ( gameOver ) return;
 
 	if ( loadingScreen ) {
 		if ( e.which === 13 ) {
@@ -344,13 +344,13 @@ $(document).keypress(function(e) {
 	}
 
 	// ignore all shortcuts
-	if ( e.altKey || e.ctrlKey ) return false;
+	if ( e.altKey || e.ctrlKey ) return;
 	var key = e.which;
 	var letter = '';
 	if ( key > 96 && key < 123 ) letter = String.fromCharCode(key);
 	else if ( key > 64 && key < 91 ) letter = String.fromCharCode(key + 32);
 	else if ( key === 39 || key === 34 ) letter = "'"; // apostrophes are used in some words...
-	else return false;
+	else return;
 
 	var target = $('.enemy.target').first();
 	if ( target.length ) {
