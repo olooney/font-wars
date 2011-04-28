@@ -37,6 +37,9 @@ html, body {
 	height: 6em;
 	width: 10em;
 }
+.spark-score {
+	font-family: 'Bentham', serif;
+}
 .mute {
 	text-align: center;
 	border: 1px solid black;

@@ -7,6 +7,8 @@ $(function() {
 
 var words = $('#word-data').html().split(/\s+/g).filter(function(w) { return w.length; });
 
+var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+
 // DRY: figure out available fonts from the HTML
 var fonts = (function() {
 	var fonts = [];
@@ -31,12 +33,23 @@ var startTime = new Date();
 
 var bullets = ['.', '!', '*', '! !', '* *', '!!!', '***'];
 function setMultiplier(m) {
+	var oldMultiplier = multiplier || 1;
 	multiplier = m || 1;
 	if ( multiplier > 50 ) multiplier = 50;
 
 	if ( multiplier >= 10 ) bullet = bullets[ Math.floor(multiplier/10) + 1 ];
 	else if ( multiplier >= 5 ) bullet = bullets[1];
 	else bullet = bullets[0];
+
+	if ( multiplier <= 1 ) {
+		return '';
+	} else if ( multiplier === 5 || (multiplier % 10 === 0) ) {
+		return 'level up!';
+	} else if ( multiplier > oldMultiplier ) {
+		return '+' + (multiplier - oldMultiplier);
+	} else {
+		return '';
+	}
 }
 setMultiplier(1);
 
@@ -96,17 +109,19 @@ $.fn.pointAt = function(target) {
 	return this;
 }
 
-$.fn.center = function () {
+$.fn.center = function() {
     this.css("position","absolute");
     this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
     this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
     return this;
 }
 
+
 Array.prototype.random = function() {
 	return this[ Math.floor(Math.random() * this.length) ]
 }
 
+// creates a new sprite on the document
 function newSprite(cls, content) { 
 	var sprite = document.createElement('div');
 	sprite.innerHTML = content;
@@ -114,6 +129,55 @@ function newSprite(cls, content) {
 	$('body').append(sprite);
 	return sprite;
 }
+
+// shows a message coming up off an element and fading away
+$.fn.sparkScore = function(score) {
+	$(this).each(function() {
+		var particle = newSprite('spark-score', score);
+		var initialPosition = alignCenters(this, particle);
+		$(particle).css(initialPosition);
+		$(particle).css({ opacity: 0.8 });
+		$(particle).animate({
+			'top': initialPosition['top'] - 50,
+			'left': initialPosition['left'],
+			opacity: 'hide'
+		}, 1000, 'linear', function() { 
+			$(particle).remove(); 
+		});
+	});
+}
+
+// spark off a single letter
+$.fn.spark = function(letter, duration, distance) {
+	if ( !duration ) duration = 500;
+	if ( !distance ) distance = 100;
+	$(this).each(function() {
+		var particle = newSprite('spark', letter);
+		var initialPosition = alignCenters(this, particle);
+		var angle = Math.random() * 2 * Math.PI;
+		$(particle).css({
+			'top': initialPosition['top'] + Math.round(20 * Math.cos(angle)),
+			'left': initialPosition['left'] + Math.round(20 * Math.sin(angle))
+		});
+		$(particle).css({ opacity: 0.8 });
+		$(particle).animate({
+			'top': initialPosition['top'] + Math.round(distance * Math.cos(angle)),
+			'left': initialPosition['left'] + Math.round(distance * Math.sin(angle)),
+			opacity: 'hide'
+		}, duration, 'linear', function() { 
+			$(particle).remove(); 
+		});
+	});
+}
+
+$.fn.explode = function(letters, duration, distance) {
+	if ( !distance ) distance = 100;
+	if ( !duration ) duration = 1000;
+	for ( var i=0; i < letters.length; i++ ) {
+		$(this).spark( letters.charAt(i), duration, Math.floor(distance + 200 * Math.random()) );
+	}
+}
+
 
 var spaceship = newSprite('spaceship', 'A');
 $(spaceship).center().hide();
@@ -193,7 +257,7 @@ function handleHighScore() {
 	var message = '';
 	var previousHighScore = $.cookie('font-wars-high-score') || 0;
 	if ( points > previousHighScore ) {
-		$.cookie('font-wars-high-score', points, { duration: 999, path: '/' });
+		$.cookie('font-wars-high-score', points, { expires: 999, path: '/' });
 		message = '<b>New High Score!</b><br>';
 	} else if ( previousHighScore > 0 ) {
 		message = 'Previous Best: ' + previousHighScore + '<br>';
@@ -268,6 +332,8 @@ function spawn() {
 function die() {
 	sound.music.volume(0, 500);
 	sound.fx.play('die');
+	$(spaceship).explode(alphabet, 3000);
+	$(spaceship).explode(alphabet.toUpperCase(), 3000);
 	gameOver = true;
 
 	updateScore();
@@ -310,10 +376,13 @@ $.fn.hit = function() {
 		.animate( this.position(), distance(spaceship, this)/3, 'linear', function() { 
 			$(this).remove();}
 		);
+	var letter = this.html().charAt(0);
 	var newWord = this.html().slice(1);
+	this.spark(letter);
 	if ( newWord.length === 0 ) {
 		sound.fx.play('kill');
-		setMultiplier(multiplier+1);
+		var msg = setMultiplier(multiplier+1);
+		if ( msg ) this.sparkScore(msg);
 		this.remove();
 	} else {
 		if ( !this.hasClass('target') ) this.target();
