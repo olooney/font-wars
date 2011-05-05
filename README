@@ -1,52 +1,58 @@
-Font Wars
-Copyright 2011, Oran Looney
+Font Wars Copyright 2011, Oran Looney
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 -----------------------------------------------------------------------------
 
-Font Wars is a typing game/trainer. You play the brave Sgrt. A,
-trapped behind enemy lines and forced to fend off waves of enemy fonts
-with nothing but your trusty punctuation gun.
+Font Wars is a typing game/trainer. You play the brave Sgrt. A, trapped behind
+enemy lines and forced to fend off waves of enemy fonts with nothing but your
+trusty punctuation gun.
 
-Gameplay is straightforward. Words come towards you and you must type 
-them before they reach you. There are no special controls: just type.
+Gameplay is straightforward. Words come towards you and you must type them
+before they reach you. There are no special controls: just type.
 
-The word list has two sources: a list of the 1000 most common English words
-(slightly edited from proper nouns,) plus a small, random selection of "hard,"
-mostly techincal, words. In case you were wondering, "kwashiorkor" is a real
-word: it is a disease caused lack of protein, very rare in the developed world
-but a serious problem throughout the world and especially tragic in children.
+The word list was composed from three sources: the 1000 most common English
+words, 500 or so harder words from an SAT study guide, and another couple
+hundred scientific, mathematical, or software related words. When learning to
+type, it's important to reach a level where the common words are instinctive
+and habitual, but it's also important to be able to type arbitrary or complex
+words. In my opinion, the hardest word to type on the list is "kwashiorkor;" it
+is a disease caused lack of protein, very rare in the developed world but a
+serious problem throughout the world and especially tragic in children.
 
-There are no graphics: Text or ascii art is used for everything. The fonts
-come from Google web fonts:
+There are no graphics: Text or ascii art is used for everything. The fonts come
+from Google web fonts:
 
 	http://code.google.com/apis/webfonts/
 
-jQuery is used for animation, and no HTML5 canvas is used. Although you'd
-think moving divs around would be flawlessly supported by now, I have seen 
-rendering artifacts on some browsers, especially once I started using custom
-fonts. 
+jQuery is used for animation, and no HTML5 canvas is used. Although you'd think
+moving divs around would be flawlessly supported by now, I have seen rendering
+artifacts on some browsers, especially once I started using custom fonts.
+Chrome has a bug animating non-standard fonts which sometimes leaves
+"smear-lines" behind... I'm not sure how to implement a work around, but since
+it's a browser rendering bug in a new feature I'm hoping it will just go away.
 
 It uses the new HTML5 audio element for background music and sound effects.
-Right now, I'm only using .ogg, which aparently does't work in Safari. I
-would have to double encode the sound files and implement switching logic to
-support that.
+Right now, I'm only using .ogg, which aparently does't work in Safari. I would
+have to double encode the sound files and implement switching logic to support
+that. HTML5 audio is frankly in a sorry state. Sound works best in Firefox 4 on
+Windows and Chrome on Ubuntu... every other browser has serious issues with
+audio, in particular when playing overlapping sounds.
 
 Some sound effects came from freesound.org and require attribution:
 http://www.freesound.org/samplesViewSingle.php?id=2225
@@ -59,23 +65,24 @@ http://www.freesound.org/samplesViewSingle.php?id=77087
 http://www.freesound.org/samplesViewSingle.php?id=9098
 http://www.freesound.org/samplesViewSingle.php?id=91924
 
-Your previous personal best is stored in a local cookie. I assume people will 
-use the game to develop their own typing skills, and the only competition that 
-matters when training is with yourself.
+Your previous personal best is stored in a local cookie. I assume people will
+use the game to develop their own typing skills, where the only competition
+that matters is with yourself.
 
-The Geometry-Wars-like multiplier system is my solution to the problem of 
-encouraging high accuracy instead of key mashing. Every completed word 
-increases the multiplier (up to 50) and a single mistake resets it back 
-down to 1. This strongly encourages long chains and encourages the player 
-to strive for high accuracy. High accuracy is further rewarded by visually and
-audibly upgrading the bullets as the multiplier increases.
+The Geometry-Wars-like multiplier system is my solution to the problem of
+encouraging high accuracy instead of key mashing. Every completed word
+increases the multiplier (up to 50) and a single mistake resets it back down to
+1. This strongly encourages long chains and encourages the player to strive for
+high accuracy. High accuracy is further rewarded by visually and audibly
+upgrading the bullets as the multiplier increases along with "+1" and "level
+up!" messages when defeating enemies.
 
-A "reset" is a good punishment, because a single mistake can be followed up by 
-several others before the player can get back on track: losing a life with each 
-mistake for example, could be frustrating as a single missed letter followed by 
-several otherwise correct ones could wipe you out of the game instantly. If 
-this happens here, you just stay at the 1x multiplier. After experimenting 
-with several alternatives, I think this is the best way to emphasize the 
-importance of accuracy without interupting the flow of the game when a mistake
-is made, or ruining the fun for low accuracy players.
+Reseting the multiplier is a good punishment since players often make several
+related mistakes in a row. So, losing a life for each mistake would be terribly
+frustrating as a single chain of related mistakes could wipe the player out
+instantly. Interupting the gameflow after a mistake also seems like a bad idea
+as it pulls the character out of their state of flow.  After experimenting with
+several alternatives, I think this is the best way to emphasize the importance
+of accuracy without interupting the flow of the game when a mistake is made, or
+ruining the fun for low accuracy players.
 

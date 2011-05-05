@@ -324,7 +324,7 @@ function spawn() {
 		// the timeout is because we can't start the fade animation on this enemy from inside this callback.
 		if ( $.contains(document.body, this) ) setTimeout(function() { die(); }, 1);
 	});
-	var spawnInterval = 200 + 400*danger - hits + 100 - 200*Math.random();
+	var spawnInterval = 200 + 400*danger - 2*hits + 100 - 200*Math.random();
 	if ( spawnInterval < 500 ) spawnInterval = 500;
 	setTimeout(spawn, spawnInterval);
 }
