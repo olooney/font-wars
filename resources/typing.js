@@ -53,10 +53,10 @@ function setMultiplier(m) {
 }
 setMultiplier(1);
 
-sound.fx.load('hit.', 'resources/sounds/39459__THE_bizniss__laser.ogg', 0.8, 7);
-sound.fx.load('hit!', 'resources/sounds/39456__THE_bizniss__laser_2.ogg', 1.0, 7);
-sound.fx.load('hit*', 'resources/sounds/39458__THE_bizniss__laser_4.ogg', 1.0, 7);
-sound.fx.load('miss','resources/sounds/2225__Andrew_Duke__garp.ogg', 0.5);
+sound.fx.load('hit.', 'resources/sounds/39459__THE_bizniss__laser.ogg', 0.6, 7);
+sound.fx.load('hit!', 'resources/sounds/39456__THE_bizniss__laser_2.ogg', 0.8, 7);
+sound.fx.load('hit*', 'resources/sounds/39458__THE_bizniss__laser_4.ogg', 0.8, 7);
+sound.fx.load('miss','resources/sounds/2225__Andrew_Duke__garp.ogg', 0.4);
 sound.fx.load('kill', 'resources/sounds/91924__Benboncan__Till_With_Bell.ogg');
 sound.fx.load('die', 'resources/sounds/33245__ljudman__grenade.ogg');
 
@@ -409,6 +409,13 @@ $(document).keypress(function(e) {
 			$(instructions).fadeOut(500);
 			spawn();
 			sound.music.loop('fast', 1.0, 10);
+
+            // without this, Chrome leaves trails behind some fonts
+            // as they move. This forces Chrome to redraw the background
+            // 50 times a second and therefore work around this issue.
+            setInterval(function() {
+                $('body').toggleClass('off-white');
+            }, 50);
 		}
 	}
 

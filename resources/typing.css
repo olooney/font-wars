@@ -59,6 +59,10 @@ html, body {
 	background-color: white;
 	font-family: 'Bentham', serif;
 }
+
+.off-white {
+    background-color: #FEFEFE;
+}
 .instructions h1 {
 	font-size: 72px;
 	font-family: 'Arimo', sans-serif;

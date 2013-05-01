@@ -44,8 +44,9 @@ jQuery is used for animation, and no HTML5 canvas is used. Although you'd think
 moving divs around would be flawlessly supported by now, I have seen rendering
 artifacts on some browsers, especially once I started using custom fonts.
 Chrome has a bug animating non-standard fonts which sometimes leaves
-"smear-lines" behind... I'm not sure how to implement a work around, but since
-it's a browser rendering bug in a new feature I'm hoping it will just go away.
+"smear-lines" behind, which I avoid by cycling the background color between
+white and a very close off-white color. This works but I wish it wasn't
+necessary. Unfortunately, the rendering bug persists even Chrome 26.
 
 It uses the new HTML5 audio element for background music and sound effects.
 Right now, I'm only using .ogg, which aparently does't work in Safari. I would
