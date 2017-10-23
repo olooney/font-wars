@@ -180,7 +180,13 @@ $.fn.explode = function(letters, duration, distance) {
 
 
 var spaceship = newSprite('spaceship', 'A');
-$(spaceship).center().hide();
+$(spaceship).css({
+        'position' : 'absolute',
+        'left' : '50%',
+        'top' : '50%',
+        'margin-left' : function() {return -$(this).outerWidth()/2},
+        'margin-top' : function() {return -$(this).outerHeight()/2}
+}).hide();
 
 function alignCenters(target, mover) {
 	target = $(target);
@@ -202,7 +208,13 @@ var instructions = newSprite('instructions', [
 	'',
 	'Press Enter to begin'
 ].join('<br>'));
-$(instructions).center();
+$(instructions).css({
+        'position' : 'absolute',
+        'left' : '50%',
+        'top' : '50%',
+        'margin-left' : function() {return -$(this).outerWidth()/2},
+        'margin-top' : function() {return -$(this).outerHeight()/2}
+});
 
 var score = newSprite('score', '');
 $(score).css({ opacity: 0.7 });
@@ -345,7 +357,13 @@ function die() {
 			sound.music.play('ending', 1.0, 700);
 			$(newSprite('game-over', 'Game Over'))
 				.css({ fontSize: '64px', width: '10em', opacity: 0 })
-				.center()
+				.css({
+					'position' : 'absolute',
+					'left' : '50%',
+					'top' : '50%',
+					'margin-left' : function() {return -$(this).outerWidth()/2},
+					'margin-top' : function() {return -$(this).outerHeight()/2}
+				})
 				.animate({ opacity: 1.0 }, 4000, undefined, function() {
 					$(score).css($(score).position()).animate({
 						opacity: 1.0,
@@ -426,7 +444,7 @@ $(document).keypress(function(e) {
 	if ( key > 96 && key < 123 ) letter = String.fromCharCode(key);
 	else if ( key > 64 && key < 91 ) letter = String.fromCharCode(key + 32);
 	else if ( key === 39 || key === 34 ) letter = "'"; // apostrophes are used in some words...
-	else return;
+	else letter = String.fromCharCode(key);
 
 	var target = $('.enemy.target').first();
 	if ( target.length ) {
