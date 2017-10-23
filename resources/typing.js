@@ -357,7 +357,7 @@ function die() {
 			sound.music.play('ending', 1.0, 700);
 			$(newSprite('game-over', 'Game Over'))
 				.css({ fontSize: '64px', width: '10em', opacity: 0 })
-				css({
+				.css({
 					'position' : 'absolute',
 					'left' : '50%',
 					'top' : '50%',
