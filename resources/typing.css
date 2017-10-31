@@ -69,3 +69,24 @@ html, body {
 	margin: 0px;
 	padding: 0px;
 }
+
+.reticle {
+    height: 300px;
+    width: 300px;
+}
+.reticle svg {
+    height: 300px;
+    width: 300px;
+    transform: scale(1.5);
+    fill: none;
+    stroke: #000;
+    stroke-width: 2px;
+    opacity: 50%;
+}
+.reticle.zoom-in svg {
+    transform: scale(0.5) rotate(180deg);
+    opacity: 0;
+    transition: transform, opacity;
+    transition-duration: 0.5s;
+    animation-timing-function: linear;
+}

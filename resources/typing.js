@@ -5,6 +5,8 @@ MIT License, see README
 
 $(function() { 
 
+var reticleSvg = '<svg id="color-fill" xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="300" xmlns:xlink="http://www.w3.org/1999/xlink"><polygon class="hex" points="300,150 225,280 75,280 0,150 75,20 225,20"></polygon></svg>';
+
 var words = $('#word-data').html().split(/\s+/g).filter(function(w) { return w.length; });
 
 var alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -32,9 +34,9 @@ var misses = 0;
 var startTime = new Date();
 
 var bullets = ['.', '!', '*', '! !', '* *', '!!!', '***'];
-function setMultiplier(m) {
+function setMultiplier(newMultipier) {
 	var oldMultiplier = multiplier || 1;
-	multiplier = m || 1;
+	multiplier = newMultipier || 1;
 	if ( multiplier > 50 ) multiplier = 50;
 
 	if ( multiplier >= 10 ) bullet = bullets[ Math.floor(multiplier/10) + 1 ];
@@ -147,6 +149,18 @@ $.fn.sparkScore = function(score) {
 	});
 }
 
+$.fn.reticle = function() {
+    $(this).each(function() {
+        var reticle = newSprite('reticle', reticleSvg);
+        var initialPosition = alignCenters(this, reticle); 
+        $(reticle).css(initialPosition);
+        $(reticle).addClass('zoom-in');
+        setTimeout(function() {
+            $(reticle).remove();
+        }, 500);
+    });
+}
+
 // spark off a single letter
 $.fn.spark = function(letter, duration, distance) {
 	if ( !duration ) duration = 500;
@@ -200,14 +214,17 @@ function alignCenters(target, mover) {
 }
 
 var instructions = newSprite('instructions', [
-	'<h1>Font Wars</h1>',
-	'Type the words as they appear',
-	'Once you start a word you must finish it',
-	'The currently targeted word is underlined',
-	'The game is over when they reach you',
-	'',
+	'<h1>Font Wars</h1><br>',
+    'Rules:<br>',
+	'<ol><li>Type the words as they appear</li>',
+	'<li>The currently targeted word is underlined</li>',
+	'<li>Hit ESC key to cancel targeting</li>',
+	'<li>Every correct letter earns you one point</li>',
+	'<li>Complete successive words without mistakes to increase score multiplier</li>',
+	'<li>The game ends when any word reaches you</li>',
+    '</ol>',
 	'Press Enter to begin'
-].join('<br>'));
+].join(''));
 $(instructions).css({
         'position' : 'absolute',
         'left' : '50%',
@@ -378,6 +395,7 @@ function die() {
 // target an enemy...
 $.fn.target = function() {
 	this.addClass('target');
+    this.reticle();
 	this.siblings('.enemy').removeClass('target');
 	$(spaceship).pointAt(this);
 	return this;
@@ -439,6 +457,8 @@ $(document).keypress(function(e) {
 
 	// ignore all shortcuts
 	if ( e.altKey || e.ctrlKey ) return;
+
+    // normal typing
 	var key = e.which;
 	var letter = '';
 	if ( key > 96 && key < 123 ) letter = String.fromCharCode(key);
@@ -446,6 +466,7 @@ $(document).keypress(function(e) {
 	else if ( key === 39 || key === 34 ) letter = "'"; // apostrophes are used in some words...
 	else letter = String.fromCharCode(key);
 
+    // shoot a letter off the targeted word, or start a new word
 	var target = $('.enemy.target').first();
 	if ( target.length ) {
 		if ( target.startsWith(letter).length ) target.hit();
@@ -458,6 +479,19 @@ $(document).keypress(function(e) {
 	updateScore();
 	return false;
 });
+
+// special ESC key handling
+$(document).keyup(function(e) { 
+    if ( e.keyCode === 27 ) { 
+        var targets = $('.enemy.target');
+        if ( targets.length ) {
+            targets.removeClass('target'); 
+            setMultiplier(multiplier - 1);
+            updateScore();
+        }
+    }
+});
+
 
 });
 
