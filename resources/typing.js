@@ -69,6 +69,14 @@ function log(message) {
 	$('body').append( message + '<br>');
 }
 
+
+// shared logic to calculate the incoming speed of enemies
+function getAttackSpeed() {
+    var danger = attackingWordCount();
+    return 10000 + 1000*danger - 5*hits;
+}
+
+
 $.fn.startsWith = function(letter) {
 	return this.filter(function() {
 		return ( $(this).html().charAt(0).toLowerCase() === letter.toLowerCase() );
@@ -149,12 +157,17 @@ $.fn.sparkScore = function(score) {
 	});
 }
 
+// targeting reticle is a hexagon that animates to
+// show the player where the word they are typing is on the
+// screen. Mostly useful to prevent confusion after hitting
+// the wrong key and starting an unexpected word.
 $.fn.reticle = function() {
     $(this).each(function() {
         var reticle = newSprite('reticle', reticleSvg);
         var initialPosition = alignCenters(this, reticle); 
         $(reticle).css(initialPosition);
         $(reticle).addClass('zoom-in');
+        $(reticle).animate( alignCenters(spaceship, reticle), getAttackSpeed(), 'linear');
         setTimeout(function() {
             $(reticle).remove();
         }, 500);
@@ -347,8 +360,8 @@ function spawn() {
 	}
 
 	// auto-balancing logic
-	var danger = attackingWordCount();
-	$(enemy).animate( alignCenters(spaceship, enemy), 10000 + 1000*danger - 5*hits, 'linear', function() {
+    var danger = attackingWordCount();
+	$(enemy).animate( alignCenters(spaceship, enemy), getAttackSpeed(), 'linear', function() {
 		// the player dies when an enemy reaches the spaceship.
 		// the timeout is because we can't start the fade animation on this enemy from inside this callback.
 		if ( $.contains(document.body, this) ) setTimeout(function() { die(); }, 1);
